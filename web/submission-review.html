@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Review - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .review-layout {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 25px;
+      align-items: start;
+    }
+
+    .review-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .review-card-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: var(--white);
+      padding: 20px 24px;
+    }
+
+    .review-card-header h2 { font-size: 1.1rem; font-weight: 700; }
+    .review-card-header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+
+    .review-card-body { padding: 24px; }
+
+    /* Order Summary */
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .order-item:last-child { border-bottom: none; }
+
+    .order-item-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .order-item-info { flex: 1; }
+    .order-item-info h4 { font-size: 0.92rem; font-weight: 700; color: var(--dark); }
+    .order-item-info span { font-size: 0.8rem; color: var(--gray); }
+
+    .order-item-score {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .order-total {
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 15px;
+    }
+
+    .order-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .order-total-row:last-child { margin-bottom: 0; }
+    .order-total-row span { font-size: 0.88rem; color: var(--gray); }
+    .order-total-row strong { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+
+    /* Success State */
+    .success-state {
+      text-align: center;
+      padding: 50px 30px;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--success), #22c55e);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--white);
+      margin: 0 auto 20px;
+      animation: popIn 0.5s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .success-state h2 { font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 10px; }
+    .success-state p { color: var(--gray); font-size: 0.95rem; margin-bottom: 6px; }
+
+    .eval-id {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--primary);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin: 12px 0 20px;
+    }
+
+    @media (max-width: 750px) {
+      .review-layout { grid-template-columns: 1fr; padding: 20px 15px; }
+      .review-card-body { padding: 16px; }
+      .review-card-header { padding: 16px 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .review-layout { padding: 15px 10px; gap: 15px; }
+      .order-item { gap: 10px; }
+      .order-item-icon { width: 38px; height: 38px; font-size: 1.1rem; }
+      .success-state { padding: 35px 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">Eval<span>Pro</span></a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <ul class="navbar-nav" id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="submission.html">Projects</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="evaluations.html">My Evaluations</a></li>
+        <li id="nav-admin" style="display:none"><a href="admin.html">Supervisor Panel</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div id="nav-auth" style="display:flex;gap:8px;">
+          <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:10px;">
+          <span class="nav-user-info">Hi, <span class="nav-user-name"></span></span>
+          <button id="btn-logout" class="btn-nav btn-nav-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header" style="background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:var(--white);padding:40px 20px;text-align:center;">
+      <h1>&#128203; Submission Review</h1>
+      <p>Review your project submission and complete evaluation details</p>
+    </div>
+
+    <div id="main-content">
+      <!-- Loaded by JS -->
+    </div>
+  </main>
+
+  <footer style="background:var(--dark);color:rgba(255,255,255,.8);padding:25px 20px;text-align:center;font-size:0.88rem;">
+    <p>&copy; 2026 EvalPro &mdash; Gomal University, United College Hazrat Sultan Bahoo</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!isLoggedIn()) {
+        window.location.href = '/web/login.html';
+        return;
+      }
+      if (!isAdmin()) {
+        window.location.href = '/web/submission.html';
+        return;
+      }
+      await loadReview();
+    });
+
+    let submissionData = null;
+    let activeRubrics = [];
+
+    async function loadReview() {
+      const container = document.getElementById('main-content');
+      try {
+        [submissionData, activeRubrics] = await Promise.all([
+          apiFetch('/submissions'),
+          apiFetch('/rubrics').catch(() => [])
+        ]);
+        const items = submissionData.items || [];
+
+        if (items.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center;padding:80px 20px;">
+              <div style="font-size:4rem;opacity:.3;margin-bottom:15px;">&#128203;</div>
+              <h3 style="font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:8px;">Submission is Empty</h3>
+              <p style="color:var(--gray);margin-bottom:25px;">Add projects to your submission before reviewing.</p>
+              <a href="submission.html" class="btn btn-primary btn-auto" style="padding:12px 30px;">Browse Projects</a>
+            </div>`;
+          return;
+        }
+
+        const totalScore = items.reduce((sum, i) => sum + (i.project?.score || 0) * i.quantity, 0);
+
+        container.innerHTML = `
+          <div class="review-layout">
+            <!-- Form -->
+            <div class="review-card">
+              <div class="review-card-header">
+                <h2>&#128221; Evaluation Details</h2>
+                <p>Provide supervisor comments and choose your scoring method</p>
+              </div>
+              <div class="review-card-body">
+                <div id="form-alert"></div>
+                <form id="evaluation-form">
+                  <div class="form-group">
+                    <label>Supervisor Comments</label>
+                    <textarea id="supervisor-comments" placeholder="Add any comments or notes for the supervisor (optional)..." rows="4"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Phone Number <span style="color:var(--gray);font-weight:400;font-size:0.8rem;">(optional)</span></label>
+                    <input type="tel" id="phone" placeholder="e.g. +92 300 0000000">
+                  </div>
+                  <div class="form-group">
+                    <label>Scoring Method *</label>
+                    <select id="scoring-method">
+                      <option value="Standard">Standard Evaluation</option>
+                      <option value="Rubric-Based">Rubric-Based Scoring</option>
+                      <option value="Peer Review">Peer Review</option>
+                      <option value="Supervisor Only">Supervisor Only</option>
+                    </select>
+                    ${activeRubrics.length > 0 ? `<p style="font-size:0.78rem;color:var(--primary);margin-top:5px;">&#127775; Active rubric detected — Rubric-Based scoring pre-selected.</p>` : ''}
+                  </div>
+                  <div class="form-group">
+                    <label>Gift Message <span style="color:var(--gray);font-weight:400;font-size:0.8rem;">(optional)</span></label>
+                    <textarea id="gift-message" placeholder="Add a personal message or note..." rows="3"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="submit-btn">
+                    &#128203; Submit for Evaluation
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div>
+              <div class="review-card">
+                <div class="review-card-header">
+                  <h2>&#128203; Project Summary</h2>
+                  <p>${items.length} project${items.length > 1 ? 's' : ''} in submission</p>
+                </div>
+                <div class="review-card-body">
+                  ${items.map(item => {
+                    const p = item.project;
+                    return `
+                      <div class="order-item">
+                        <div class="order-item-icon">${getCategoryIcon(p.category)}</div>
+                        <div class="order-item-info">
+                          <h4>${escHtml(p.name || 'Project')}</h4>
+                          <span>${p.category} &bull; x${item.quantity}</span>
+                        </div>
+                        <div class="order-item-score">${(p.score || 0) * item.quantity} pts</div>
+                      </div>
+                    `;
+                  }).join('')}
+                  <div class="order-total">
+                    <div class="order-total-row">
+                      <span>Projects:</span>
+                      <span>${items.length}</span>
+                    </div>
+                    <div class="order-total-row">
+                      <span>Total Score:</span>
+                      <strong>${totalScore} pts</strong>
+                    </div>
+                  </div>
+                  <div style="margin-top:15px;">
+                    <a href="submission.html" class="btn btn-outline" style="font-size:0.85rem;padding:9px;">
+                      &#8592; Edit Submission
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Active Rubric Card -->
+              ${activeRubrics.length > 0 ? `
+              <div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-top:15px;color:#fff;">
+                <h4 style="font-size:0.92rem;font-weight:700;margin-bottom:4px;">&#127775; Active Evaluation Rubric</h4>
+                <p style="font-size:0.78rem;opacity:.75;margin-bottom:14px;">Your project(s) will be graded using this rubric</p>
+                ${activeRubrics.map(r => {
+                  const daysLeft = Math.ceil((new Date(r.endTime) - new Date()) / (1000*60*60*24));
+                  return `
+                  <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+                      <strong style="font-size:0.88rem;">${escHtml(r.title)}</strong>
+                      ${r.discountPercentage > 0 ? `<span style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;">+${r.discountPercentage}% Bonus</span>` : ''}
+                    </div>
+                    <p style="font-size:0.8rem;opacity:.85;margin-bottom:8px;">${escHtml(r.description)}</p>
+                    ${r.criteria && r.criteria.length > 0 ? `
+                    <div style="font-size:0.78rem;opacity:.9;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Criteria</div>
+                    ${r.criteria.map(c => `
+                      <div style="display:flex;justify-content:space-between;font-size:0.8rem;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.1);">
+                        <span>${escHtml(c.name)}</span>
+                        <span style="font-weight:700;">${c.maxScore} pts</span>
+                      </div>`).join('')}` : ''}
+                    <div style="font-size:0.75rem;opacity:.7;margin-top:8px;">&#8987; ${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining &bull; Ends ${new Date(r.endTime).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+                  </div>`;
+                }).join('')}
+              </div>` : ''}
+
+              <!-- Info Card -->
+              <div style="background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);margin-top:15px;">
+                <h4 style="font-size:0.92rem;font-weight:700;color:var(--dark);margin-bottom:12px;">&#8505; What Happens Next?</h4>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  ${['Submitted', 'Under Review', 'Evaluated', 'Approved'].map((s, i) => `
+                    <div style="display:flex;align-items:center;gap:10px;font-size:0.84rem;">
+                      <span style="width:22px;height:22px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;">${i+1}</span>
+                      <span style="color:var(--gray);">${s}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Auto-select Rubric-Based scoring if active rubric exists
+        if (activeRubrics.length > 0) {
+          document.getElementById('scoring-method').value = 'Rubric-Based';
+        }
+        document.getElementById('evaluation-form').addEventListener('submit', handleSubmit);
+
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center;padding:60px 20px;"><div style="font-size:3rem;margin-bottom:15px;">&#9888;</div><h3>Failed to load submission</h3><p style="color:var(--gray);">${err.message}</p></div>`;
+      }
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+      const supervisorComments = document.getElementById('supervisor-comments').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const scoringMethod = document.getElementById('scoring-method').value;
+      const giftMessage = document.getElementById('gift-message').value.trim();
+
+      try {
+        const result = await apiFetch('/evaluations', {
+          method: 'POST',
+          body: JSON.stringify({ supervisorComments, phone, scoringMethod, giftMessage })
+        });
+
+        showSuccess(result);
+      } catch (err) {
+        showAlert('form-alert', err.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '&#128203; Submit for Evaluation';
+      }
+    }
+
+    function showSuccess(evaluation) {
+      // Clear nav submission count since backend cleared the submission
+      const navCount = document.getElementById('nav-submission-count');
+      if (navCount) { navCount.textContent = '0'; navCount.style.display = 'none'; }
+      document.getElementById('main-content').innerHTML = `
+        <div style="max-width:550px;margin:40px auto;padding:20px;">
+          <div class="review-card">
+            <div class="success-state">
+              <div class="success-icon">&#10003;</div>
+              <h2>Evaluation Submitted!</h2>
+              <p>Your project has been submitted for evaluation successfully.</p>
+              <div class="eval-id">ID: ${evaluation._id?.substring(0,12).toUpperCase() || 'EVL-2026'}</div>
+              <p style="margin-bottom:6px;"><strong>Status:</strong> <span class="status-badge status-submitted">Submitted</span></p>
+              <p style="margin-bottom:6px;"><strong>Scoring Method:</strong> ${evaluation.scoringMethod}</p>
+              <p style="margin-bottom:25px;"><strong>Total Score:</strong> ${evaluation.totalScore} pts</p>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="evaluations.html" class="btn btn-primary btn-auto" style="padding:11px 25px;">Track My Evaluations</a>
+                <a href="submission.html" class="btn btn-outline btn-auto" style="padding:11px 25px;">Browse More Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/Stylee.css">
+</head>
+<body class="auth-page">
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <nav class="auth-navbar">
+    <a href="index.html" class="auth-logo">Eval<span>Pro</span></a>
+    <span style="color:rgba(255,255,255,.7);font-size:0.9rem;">Already have an account? <a href="login.html" class="auth-nav-link" style="color:var(--accent);font-weight:700;">Sign In</a></span>
+  </nav>
+
+  <div class="auth-container">
+    <!-- Features Sidebar -->
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#127891;</div>
+        <div class="auth-feature-text">
+          <h4>Academic Platform</h4>
+          <p>Designed specifically for students and supervisors at Gomal University</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128196;</div>
+        <div class="auth-feature-text">
+          <h4>12+ Academic Projects</h4>
+          <p>Browse and select from over 12 projects across 6 categories</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128202;</div>
+        <div class="auth-feature-text">
+          <h4>Full Evaluation Lifecycle</h4>
+          <p>Submitted → Under Review → Evaluated → Approved tracking</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128241;</div>
+        <div class="auth-feature-text">
+          <h4>Mobile Friendly</h4>
+          <p>Access from any device — desktop, tablet, or smartphone</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signup Card -->
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-icon">&#128100;</div>
+        <h1>Create Account</h1>
+        <p>Join EvalPro and get started today</p>
+      </div>
+
+      <div class="auth-alert" id="auth-alert"></div>
+
+      <form class="auth-form" id="signup-form" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <div class="input-wrap">
+            <span class="input-icon">&#128100;</span>
+            <input type="text" id="name" placeholder="Enter your full name" autocomplete="name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">&#9993;</span>
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">&#128275;</span>
+            <input type="password" id="password" placeholder="Create a password (min 6 chars)" autocomplete="new-password" required>
+            <button type="button" class="toggle-password" title="Toggle visibility">&#128065;&#65039;</button>
+          </div>
+          <div class="password-strength">
+            <div class="strength-bar"><div class="strength-fill" id="strength-fill" style="width:0%;background:#dc2626;"></div></div>
+            <span class="strength-text" id="strength-text"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">&#128275;</span>
+            <input type="password" id="confirm-password" placeholder="Repeat your password" autocomplete="new-password" required>
+            <button type="button" class="toggle-password" title="Toggle visibility">&#128065;&#65039;</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:20px;">
+          <input type="checkbox" id="terms" style="width:auto;margin:3px 0 0;" required>
+          <label for="terms" style="margin:0;font-weight:400;font-size:0.85rem;color:var(--gray);">
+            I agree to the <a href="terms.html" style="color:var(--primary);font-weight:600;">Terms of Service</a> and <a href="privacy.html" style="color:var(--primary);font-weight:600;">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-auth">
+          <span>&#128100;</span> Create Account
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a href="login.html">Sign in here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    // Extra: Check terms checkbox
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      if (!document.getElementById('terms').checked) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const alertEl = document.getElementById('auth-alert');
+        alertEl.textContent = 'Please agree to the Terms of Service.';
+        alertEl.className = 'auth-alert error show';
+      }
+    }, true);
+  </script>
+</body>
+</html>

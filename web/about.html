@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .about-hero {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: var(--white);
+      padding: 80px 20px 70px;
+      text-align: center;
+    }
+    .about-hero .tag {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.3);
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+    .about-hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; margin-bottom: 15px; line-height: 1.2; }
+    .about-hero h1 span { color: var(--accent); }
+    .about-hero p { font-size: 1.05rem; opacity: .88; max-width: 580px; margin: 0 auto; }
+
+    /* Mission */
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 70px 20px;
+    }
+    .mission-text h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--dark); margin-bottom: 16px; }
+    .mission-text h2 span { color: var(--primary); }
+    .mission-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.8; margin-bottom: 14px; }
+    .mission-visual {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+      color: var(--white);
+    }
+    .mission-visual .big-icon { font-size: 5rem; margin-bottom: 18px; display: block; }
+    .mission-visual h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
+    .mission-visual p { font-size: 0.9rem; opacity: .85; }
+
+    /* Stats */
+    .about-stats {
+      background: var(--primary);
+      color: var(--white);
+      padding: 50px 20px;
+    }
+    .about-stats-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+    .about-stat h3 { font-size: 2.4rem; font-weight: 800; color: var(--accent); }
+    .about-stat p { font-size: 0.88rem; opacity: .85; margin-top: 4px; }
+
+    /* Values */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .value-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .value-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .value-text h4 { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .value-text p { font-size: 0.85rem; color: var(--gray); line-height: 1.7; }
+
+    /* Tech stack */
+    .tech-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .tech-pill {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .tech-pill:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
+
+    /* CTA */
+    .about-cta {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+      color: var(--white);
+      padding: 70px 20px;
+      text-align: center;
+    }
+    .about-cta h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; margin-bottom: 12px; }
+    .about-cta p { opacity: .88; font-size: 1rem; margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    @media (max-width: 768px) {
+      .mission-grid { grid-template-columns: 1fr; padding: 40px 15px; gap: 28px; }
+      .about-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-hero { padding: 55px 15px 50px; }
+    }
+    @media (max-width: 480px) {
+      .about-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .about-stat h3 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">Eval<span>Pro</span></a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <ul class="navbar-nav" id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="submission.html">Projects</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li id="nav-evals-link" style="display:none"><a href="evaluations.html">Evaluations</a></li>
+        <li id="nav-admin" style="display:none"><a href="admin.html">Supervisor Panel</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div id="nav-auth" style="display:flex;gap:8px;">
+          <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
+          <a href="signup.html" class="btn-nav btn-nav-white">Sign Up</a>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:10px;">
+          <span class="nav-user-info">Hi, <span class="nav-user-name"></span></span>
+          <button id="btn-logout" class="btn-nav btn-nav-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="about-hero">
+      <div class="tag">&#127891; Academic Platform</div>
+      <h1>About <span>EvalPro</span></h1>
+      <p>A web-based project evaluation and management system built to make evaluation transparent, efficient, and fair.</p>
+    </section>
+
+    <!-- Mission -->
+    <div class="mission-grid">
+      <div class="mission-text">
+        <h2>Our <span>Mission</span></h2>
+        <p>EvalPro was created to modernize the project evaluation process by replacing slow, paper-based workflows with a transparent, real-time digital platform.</p>
+        <p>Users can submit project proposals, track evaluation progress through every stage, and receive structured feedback — all in one place. Supervisors get a powerful dashboard to manage projects, set evaluation rubrics, and provide scores efficiently.</p>
+        <p>Our goal is to make project management fair, transparent, and accessible for everyone involved.</p>
+      </div>
+      <div class="mission-visual">
+        <span class="big-icon">&#127891;</span>
+        <h3>Built for Academia</h3>
+        <p>Designed for the full evaluation workflow — from project proposal to final evaluation and approval.</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="about-stats">
+      <div class="about-stats-grid">
+        <div class="about-stat">
+          <h3>12+</h3>
+          <p>Academic Projects</p>
+        </div>
+        <div class="about-stat">
+          <h3>6</h3>
+          <p>Project Categories</p>
+        </div>
+        <div class="about-stat">
+          <h3>4</h3>
+          <p>Evaluation Stages</p>
+        </div>
+        <div class="about-stat">
+          <h3>100%</h3>
+          <p>Open Access</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <section class="section section-gray">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">What We Stand For</span>
+          <h2>Our Core Values</h2>
+          <p>The principles that guide how EvalPro is built and operated.</p>
+        </div>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon">&#128270;</div>
+            <div class="value-text">
+              <h4>Transparency</h4>
+              <p>All evaluation scores and rubrics are visible to students. No hidden grading — every decision is documented and traceable.</p>
+            </div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">&#9878;&#65039;</div>
+            <div class="value-text">
+              <h4>Fairness</h4>
+              <p>Standardized rubric-based scoring ensures every project is evaluated on equal footing, regardless of who submitted it.</p>
+            </div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">&#128640;</div>
+            <div class="value-text">
+              <h4>Efficiency</h4>
+              <p>Streamlined workflows replace paper forms. Supervisors manage dozens of proposals in minutes through one clean dashboard.</p>
+            </div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">&#128274;</div>
+            <div class="value-text">
+              <h4>Security</h4>
+              <p>JWT authentication, bcrypt password hashing, and role-based access control protect every account and submission.</p>
+            </div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">&#128241;</div>
+            <div class="value-text">
+              <h4>Accessibility</h4>
+              <p>Fully responsive design means EvalPro works on any device — desktop, tablet, or smartphone — for every user.</p>
+            </div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">&#128218;</div>
+            <div class="value-text">
+              <h4>Academic Integrity</h4>
+              <p>The platform is built to uphold university standards. Project submissions, approvals, and records are preserved for accountability.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="section section-gray">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Built With</span>
+          <h2>Technology Stack</h2>
+          <p>Modern, reliable technologies powering EvalPro.</p>
+        </div>
+        <div class="tech-grid">
+          <div class="tech-pill">&#128310; Node.js</div>
+          <div class="tech-pill">&#9889; Express.js</div>
+          <div class="tech-pill">&#128196; MongoDB</div>
+          <div class="tech-pill">&#128274; JWT Auth</div>
+          <div class="tech-pill">&#127760; HTML5 / CSS3</div>
+          <div class="tech-pill">&#128312; JavaScript (ES6+)</div>
+          <div class="tech-pill">&#128202; Mongoose ODM</div>
+          <div class="tech-pill">&#128241; Responsive Design</div>
+          <div class="tech-pill">&#128640; REST API</div>
+          <div class="tech-pill">&#128203; Multer (File Upload)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="about-cta">
+      <h2>Ready to Get Started?</h2>
+      <p>Join EvalPro today and experience a better way to manage and evaluate academic projects.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <a href="signup.html" class="btn-hero-primary">Create Account</a>
+        <a href="submission.html" class="btn-hero-outline">Browse Projects</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Eval<span>Pro</span></div>
+        <p class="footer-desc">Web-Based Project Evaluation and Management System &mdash; Gomal University, United College Hazrat Sultan Bahoo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="submission.html">Browse Projects</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul class="footer-links">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="signup.html">Sign Up</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 EvalPro. All rights reserved.</span>
+      <span>BSCS Group 3 &mdash; Gomal University</span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

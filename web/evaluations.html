@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Evaluations - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .evaluations-page { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+
+    .eval-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .eval-card:hover { box-shadow: var(--shadow-md); }
+
+    .eval-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 15px;
+    }
+
+    .eval-id { font-size: 0.8rem; color: var(--gray); margin-bottom: 4px; }
+    .eval-date { font-size: 0.78rem; color: var(--gray); }
+    .eval-meta h3 { font-size: 1rem; font-weight: 700; color: var(--dark); }
+
+    .eval-card-body { padding: 18px 22px; }
+
+    .eval-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+
+    .eval-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--light-gray);
+      border-radius: 8px;
+    }
+
+    .eval-item-icon { font-size: 1.3rem; }
+    .eval-item-name { font-size: 0.88rem; font-weight: 600; color: var(--dark); flex: 1; }
+    .eval-item-score { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
+
+    .eval-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .eval-detail-item { font-size: 0.85rem; }
+    .eval-detail-item .label { color: var(--gray); font-size: 0.78rem; margin-bottom: 3px; }
+    .eval-detail-item .value { font-weight: 600; color: var(--dark); }
+
+    .eval-feedback {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 7px;
+      padding: 12px 15px;
+      font-size: 0.87rem;
+      color: #166534;
+    }
+
+    .eval-feedback .feedback-label { font-weight: 700; margin-bottom: 4px; }
+
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 15px;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+
+    .progress-step::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .progress-step:last-child::after { display: none; }
+
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      z-index: 1;
+      position: relative;
+      color: var(--gray);
+    }
+
+    .step-dot.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+    .step-dot.done { background: var(--success); color: var(--white); border-color: var(--success); }
+
+    .step-label { font-size: 0.68rem; color: var(--gray); margin-top: 5px; text-align: center; }
+    .step-label.active { color: var(--primary); font-weight: 700; }
+    .step-label.done { color: var(--success); font-weight: 600; }
+
+    /* Filter tabs */
+    .eval-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .eval-tab {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 2px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray);
+      transition: var(--transition);
+    }
+
+    .eval-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .eval-tab.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    @media (max-width: 600px) {
+      .eval-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .eval-card-header .status-badge { align-self: flex-start; }
+      .evaluations-page { padding: 20px 12px; }
+      .eval-card-body { padding: 14px 15px; }
+      .eval-card-header { padding: 14px 15px; }
+      .progress-steps { gap: 0; }
+      .step-label { font-size: 0.6rem; }
+      .eval-details { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 400px) {
+      .eval-details { grid-template-columns: 1fr; }
+      .progress-step::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">Eval<span>Pro</span></a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <ul class="navbar-nav" id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="submission.html">Projects</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="evaluations.html" class="active">Evaluations</a></li>
+        <li id="nav-admin" style="display:none"><a href="admin.html">Supervisor Panel</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div id="nav-auth" style="display:flex;gap:8px;">
+          <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
+          <a href="signup.html" class="btn-nav btn-nav-white">Sign Up</a>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:10px;">
+          <span class="nav-user-info">Hi, <span class="nav-user-name"></span></span>
+          <button id="btn-logout" class="btn-nav btn-nav-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header" style="background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:var(--white);padding:40px 20px;text-align:center;">
+      <h1>&#128202; My Evaluations</h1>
+      <p>Track your project evaluation history and status</p>
+    </div>
+
+    <div class="evaluations-page">
+      <div id="evaluations-container">
+        <div style="text-align:center;padding:60px 20px;">
+          <div class="loader-spinner" style="border-color:rgba(30,64,175,.3);border-top-color:var(--primary);margin:0 auto 15px;width:40px;height:40px;border-width:4px;"></div>
+          <p style="color:var(--gray)">Loading evaluations...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="background:var(--dark);color:rgba(255,255,255,.8);padding:25px 20px;text-align:center;font-size:0.88rem;">
+    <p>&copy; 2026 EvalPro &mdash; Gomal University, United College Hazrat Sultan Bahoo</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    const STATUSES = ['Submitted', 'Under Review', 'Evaluated', 'Approved'];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!isLoggedIn()) {
+        window.location.href = '/web/login.html';
+        return;
+      }
+      if (!isAdmin()) {
+        window.location.href = '/web/submission.html';
+        return;
+      }
+      await loadEvaluations();
+    });
+
+    let allEvals = [];
+    let currentFilter = 'all';
+
+    async function loadEvaluations() {
+      try {
+        allEvals = await apiFetch('/evaluations/my');
+        renderEvaluations(allEvals);
+      } catch (err) {
+        document.getElementById('evaluations-container').innerHTML = `
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:3rem;margin-bottom:15px;">&#9888;</div>
+            <h3>Failed to load evaluations</h3>
+            <p style="color:var(--gray)">${err.message}</p>
+          </div>`;
+      }
+    }
+
+    function renderEvaluations(evals) {
+      const container = document.getElementById('evaluations-container');
+
+      if (evals.length === 0 && currentFilter === 'all') {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">&#128202;</div>
+            <h3>No Evaluations Yet</h3>
+            <p>Submit a project proposal to start your evaluation journey.</p>
+            <div style="margin-top:20px;">
+              <a href="submission.html" class="btn btn-primary btn-auto" style="padding:11px 25px;">Browse Projects</a>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const tabHtml = `
+        <div class="eval-tabs">
+          <button class="eval-tab ${currentFilter === 'all' ? 'active' : ''}" onclick="filterEvals('all')">
+            All (${allEvals.length})
+          </button>
+          ${STATUSES.map(s => {
+            const count = allEvals.filter(e => e.status === s).length;
+            return `<button class="eval-tab ${currentFilter === s ? 'active' : ''}" onclick="filterEvals('${s}')">
+              ${s} (${count})
+            </button>`;
+          }).join('')}
+        </div>
+      `;
+
+      if (evals.length === 0) {
+        container.innerHTML = tabHtml + `
+          <div class="empty-state">
+            <div class="empty-icon">&#128202;</div>
+            <h3>No ${currentFilter} Evaluations</h3>
+            <p>You don't have any evaluations with this status.</p>
+          </div>`;
+        return;
+      }
+
+      const evalsHtml = evals.map(ev => {
+        const stepIndex = STATUSES.indexOf(ev.status);
+        return `
+          <div class="eval-card">
+            <div class="eval-card-header">
+              <div class="eval-meta">
+                <div class="eval-id">ID: #${ev._id.substring(0,10).toUpperCase()}</div>
+                <h3>Evaluation &mdash; ${ev.items?.length || 0} Project(s)</h3>
+                <div class="eval-date">Submitted: ${formatDate(ev.createdAt)}</div>
+              </div>
+              ${statusBadge(ev.status)}
+            </div>
+            <div class="eval-card-body">
+              <!-- Progress Bar -->
+              <div class="progress-steps">
+                ${STATUSES.map((s, i) => {
+                  const isDone = i < stepIndex;
+                  const isActive = i === stepIndex;
+                  return `
+                    <div class="progress-step">
+                      <div class="step-dot ${isDone ? 'done' : isActive ? 'active' : ''}">
+                        ${isDone ? '&#10003;' : (i + 1)}
+                      </div>
+                      <div class="step-label ${isDone ? 'done' : isActive ? 'active' : ''}">${s.split(' ')[0]}</div>
+                    </div>`;
+                }).join('')}
+              </div>
+
+              <!-- Projects -->
+              <div class="eval-items">
+                ${(ev.items || []).map(item => {
+                  const p = item.project;
+                  if (!p) return '';
+                  return `
+                    <div class="eval-item">
+                      <span class="eval-item-icon">${getCategoryIcon(p.category)}</span>
+                      <span class="eval-item-name">${escHtml(p.name || 'Project')}</span>
+                      <span style="font-size:0.78rem;color:var(--gray);">x${item.quantity}</span>
+                      <span class="eval-item-score">${(p.score || 0) * item.quantity} pts</span>
+                    </div>`;
+                }).join('')}
+              </div>
+
+              <!-- Details -->
+              <div class="eval-details">
+                <div class="eval-detail-item">
+                  <div class="label">Total Score</div>
+                  <div class="value" style="color:var(--primary);font-size:1.05rem;">${ev.totalScore} pts</div>
+                </div>
+                <div class="eval-detail-item">
+                  <div class="label">Scoring Method</div>
+                  <div class="value">${ev.scoringMethod}</div>
+                </div>
+                ${ev.phone ? `<div class="eval-detail-item"><div class="label">Phone</div><div class="value">${escHtml(ev.phone)}</div></div>` : ''}
+                ${ev.supervisorComments ? `<div class="eval-detail-item" style="grid-column:1/-1;"><div class="label">Comments</div><div class="value">${escHtml(ev.supervisorComments)}</div></div>` : ''}
+              </div>
+
+              ${ev.supervisorScore != null || ev.feedback ? `
+                <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:10px;padding:18px;margin-top:4px;">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--primary);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;">&#127775; Supervisor Evaluation</div>
+                  ${ev.supervisorScore != null ? `
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:${ev.feedback ? '14px' : '0'};">
+                      <div style="background:var(--primary);color:#fff;border-radius:10px;padding:10px 18px;text-align:center;">
+                        <div style="font-size:1.8rem;font-weight:800;line-height:1;">${ev.supervisorScore}</div>
+                        <div style="font-size:0.68rem;opacity:.85;">/ 100</div>
+                      </div>
+                      <div>
+                        <div style="font-size:0.88rem;font-weight:700;color:var(--dark);">Supervisor Score</div>
+                        <div style="font-size:0.8rem;color:var(--gray);">${getScoreLabel(ev.supervisorScore)}</div>
+                      </div>
+                    </div>` : ''}
+                  ${ev.feedback ? `
+                    <div style="font-size:0.87rem;color:var(--dark);line-height:1.65;background:rgba(255,255,255,.6);border-radius:7px;padding:10px 14px;">
+                      <strong style="color:var(--primary);">Feedback:</strong> ${escHtml(ev.feedback)}
+                    </div>` : ''}
+                </div>` : `
+                <div style="background:#f8fafc;border:1px dashed var(--border);border-radius:8px;padding:14px;text-align:center;font-size:0.85rem;color:var(--gray);">
+                  &#9203; Awaiting supervisor feedback &amp; score
+                </div>`}
+            </div>
+          </div>`;
+      }).join('');
+
+      container.innerHTML = tabHtml + evalsHtml;
+    }
+
+    function filterEvals(status) {
+      currentFilter = status;
+      const filtered = status === 'all' ? allEvals : allEvals.filter(e => e.status === status);
+      renderEvaluations(filtered);
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function getScoreLabel(score) {
+      if (score >= 90) return '&#127942; Outstanding';
+      if (score >= 80) return '&#127881; Excellent';
+      if (score >= 70) return '&#128077; Good';
+      if (score >= 60) return '&#128522; Satisfactory';
+      return '&#128531; Needs Improvement';
+    }
+  </script>
+</body>
+</html>

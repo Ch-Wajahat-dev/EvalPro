@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .legal-hero {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: var(--white);
+      padding: 60px 20px 50px;
+      text-align: center;
+    }
+    .legal-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+    .legal-hero p { font-size: 1rem; opacity: .85; }
+    .legal-hero .updated { display: inline-block; margin-top: 14px; background: rgba(255,255,255,.15); padding: 5px 16px; border-radius: 20px; font-size: 0.82rem; }
+
+    .legal-body { max-width: 820px; margin: 0 auto; padding: 50px 24px 70px; }
+
+    .legal-toc { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 22px 28px; margin-bottom: 40px; }
+    .legal-toc h3 { font-size: 0.9rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+    .legal-toc ol { padding-left: 18px; }
+    .legal-toc li { margin-bottom: 6px; }
+    .legal-toc a { color: var(--primary); font-size: 0.88rem; font-weight: 500; text-decoration: none; }
+    .legal-toc a:hover { text-decoration: underline; }
+
+    .legal-section { margin-bottom: 42px; scroll-margin-top: 80px; }
+    .legal-section h2 { font-size: 1.25rem; font-weight: 800; color: var(--dark); border-left: 4px solid var(--primary); padding-left: 14px; margin-bottom: 16px; }
+    .legal-section p { font-size: 0.92rem; color: #374151; line-height: 1.8; margin-bottom: 12px; }
+    .legal-section ul, .legal-section ol { padding-left: 20px; margin-bottom: 12px; }
+    .legal-section li { font-size: 0.92rem; color: #374151; line-height: 1.75; margin-bottom: 6px; }
+
+    .legal-highlight { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; font-size: 0.88rem; color: #92400e; line-height: 1.7; }
+
+    .legal-contact-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; box-shadow: var(--shadow); text-align: center; margin-top: 40px; }
+    .legal-contact-box h3 { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .legal-contact-box p { font-size: 0.88rem; color: var(--gray); margin-bottom: 14px; }
+
+    @media (max-width: 600px) {
+      .legal-hero { padding: 40px 15px 35px; }
+      .legal-hero h1 { font-size: 1.7rem; }
+      .legal-body { padding: 30px 15px 50px; }
+      .legal-toc { padding: 16px 18px; }
+      .legal-section h2 { font-size: 1.1rem; }
+      .legal-contact-box { padding: 18px 16px; }
+      .legal-contact-box .btn { display: block; margin-bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">Eval<span>Pro</span></a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <ul class="navbar-nav" id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="submission.html">Projects</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="about.html">About</a></li>
+        <li id="nav-evals-link" style="display:none"><a href="evaluations.html">Evaluations</a></li>
+        <li id="nav-admin" style="display:none"><a href="admin.html">Supervisor Panel</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div id="nav-auth" style="display:flex;gap:8px;">
+          <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
+          <a href="signup.html" class="btn-nav btn-nav-white">Sign Up</a>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:10px;">
+          <span class="nav-user-info">Hi, <span class="nav-user-name"></span></span>
+          <button id="btn-logout" class="btn-nav btn-nav-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="legal-hero">
+    <h1>&#128274; Privacy Policy</h1>
+    <p>Your privacy matters to us. Learn how EvalPro collects and uses your data.</p>
+    <span class="updated">Last Updated: March 2026</span>
+  </div>
+
+  <div class="legal-body">
+
+    <!-- Table of Contents -->
+    <div class="legal-toc">
+      <h3>&#128196; Table of Contents</h3>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#collection">Information We Collect</a></li>
+        <li><a href="#usage">How We Use Your Information</a></li>
+        <li><a href="#sharing">Information Sharing</a></li>
+        <li><a href="#storage">Data Storage &amp; Security</a></li>
+        <li><a href="#cookies">Cookies &amp; Session Data</a></li>
+        <li><a href="#rights">Your Rights</a></li>
+        <li><a href="#retention">Data Retention</a></li>
+        <li><a href="#minors">Minors</a></li>
+        <li><a href="#changes">Changes to This Policy</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ol>
+    </div>
+
+    <!-- Sections -->
+    <div class="legal-section" id="overview">
+      <h2>1. Overview</h2>
+      <p>This Privacy Policy describes how EvalPro ("the Platform", "we", "us") collects, uses, and protects the personal information of users including students, supervisors, and administrators at Gomal University, United College Hazrat Sultan Bahoo.</p>
+      <p>By using EvalPro, you consent to the practices described in this policy. This policy is incorporated by reference into our <a href="terms.html" style="color:var(--primary);font-weight:600;">Terms of Service</a>.</p>
+      <div class="legal-highlight">
+        &#9432; EvalPro is an academic platform operated within an educational institution. Your data is used solely for academic evaluation and management purposes.
+      </div>
+    </div>
+
+    <div class="legal-section" id="collection">
+      <h2>2. Information We Collect</h2>
+      <p>We collect the following types of information when you use EvalPro:</p>
+      <p><strong>Account Information:</strong></p>
+      <ul>
+        <li>Full name and email address provided during registration.</li>
+        <li>Password (stored as a secure hash — never in plain text).</li>
+        <li>Role assignment (student or supervisor/admin).</li>
+      </ul>
+      <p><strong>Project &amp; Submission Data:</strong></p>
+      <ul>
+        <li>Project titles, descriptions, and categories you submit.</li>
+        <li>Uploaded files including project images and documents.</li>
+        <li>Evaluation scores and feedback notes.</li>
+        <li>Project approval status and history.</li>
+      </ul>
+      <p><strong>Usage Data:</strong></p>
+      <ul>
+        <li>Actions performed within the Platform (project submissions, approvals, evaluations).</li>
+        <li>Date and time of account activity.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="usage">
+      <h2>3. How We Use Your Information</h2>
+      <p>EvalPro uses your information exclusively for academic and platform management purposes:</p>
+      <ul>
+        <li>To authenticate your identity and manage your account access.</li>
+        <li>To display your submitted projects and proposals to supervisors for evaluation.</li>
+        <li>To allow supervisors to provide scores and feedback on academic projects.</li>
+        <li>To maintain a public listing of approved academic projects for transparency.</li>
+        <li>To send system notifications related to your project status (approval, rejection, feedback).</li>
+        <li>To generate aggregate statistics for institutional reporting (without identifying individuals).</li>
+        <li>To ensure the security and integrity of the Platform.</li>
+      </ul>
+      <p>We do not use your information for advertising, marketing to third parties, or any commercial purpose.</p>
+    </div>
+
+    <div class="legal-section" id="sharing">
+      <h2>4. Information Sharing</h2>
+      <p>EvalPro does not sell, trade, or rent your personal information to third parties. Your information may be visible to or shared with:</p>
+      <ul>
+        <li><strong>Supervisors and Administrators:</strong> Your name, submitted projects, and evaluation results are visible to assigned supervisors and platform administrators for academic review.</li>
+        <li><strong>Other Registered Users:</strong> Approved and published projects (including your name and project details) may be visible to other registered users on the public projects listing.</li>
+        <li><strong>University Authorities:</strong> In cases of academic misconduct or upon official request, your account information and activity may be disclosed to authorized university personnel.</li>
+      </ul>
+      <div class="legal-highlight">
+        &#9888; Uploaded documents and files attached to approved projects may be accessible to supervisors and administrators. Do not upload documents containing sensitive personal information beyond what is required for academic purposes.
+      </div>
+    </div>
+
+    <div class="legal-section" id="storage">
+      <h2>5. Data Storage &amp; Security</h2>
+      <p>Your data is stored on servers managed within the institutional environment. We take reasonable technical measures to protect your information, including:</p>
+      <ul>
+        <li>Passwords are hashed using industry-standard algorithms (bcrypt) and are never stored in plain text.</li>
+        <li>Authentication is managed via JSON Web Tokens (JWT) with expiration.</li>
+        <li>API endpoints are protected by role-based access control (student vs. supervisor/admin).</li>
+        <li>File uploads are stored in a restricted server directory.</li>
+      </ul>
+      <p>However, no system can guarantee absolute security. You are responsible for maintaining the confidentiality of your login credentials.</p>
+    </div>
+
+    <div class="legal-section" id="cookies">
+      <h2>6. Cookies &amp; Session Data</h2>
+      <p>EvalPro uses browser <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:0.85rem;">localStorage</code> to store your authentication token and basic session information (name, role) locally on your device. This data is used to:</p>
+      <ul>
+        <li>Keep you logged in across page navigations within the Platform.</li>
+        <li>Display your name and role-appropriate features in the interface.</li>
+      </ul>
+      <p>This data remains on your device and is removed when you log out or clear your browser storage. EvalPro does not use third-party tracking cookies or analytics services.</p>
+    </div>
+
+    <div class="legal-section" id="rights">
+      <h2>7. Your Rights</h2>
+      <p>As a user of EvalPro, you have the following rights regarding your personal data:</p>
+      <ul>
+        <li><strong>Access:</strong> You may request a summary of the personal information we hold about you by contacting the system administrator.</li>
+        <li><strong>Correction:</strong> If your account information is inaccurate, contact an administrator to have it corrected.</li>
+        <li><strong>Deletion:</strong> You may request deletion of your account. Note that submitted project data may be retained for academic record purposes even after account deletion, per university policy.</li>
+        <li><strong>Visibility Control:</strong> Approved projects that are publicly listed can be unlisted by an administrator upon request.</li>
+      </ul>
+      <p>To exercise any of these rights, contact the system administrator or use the contact details provided at the bottom of this policy.</p>
+    </div>
+
+    <div class="legal-section" id="retention">
+      <h2>8. Data Retention</h2>
+      <p>We retain your personal data for the duration of your academic enrollment or as long as your account remains active. Specific retention rules:</p>
+      <ul>
+        <li>Account information is retained for the duration of your relationship with the institution.</li>
+        <li>Submitted project data and evaluation records may be retained indefinitely for academic record purposes, even after account deactivation.</li>
+        <li>Upon formal request, personal identifiers may be anonymized in retained academic records.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="minors">
+      <h2>9. Minors</h2>
+      <p>EvalPro is intended for use by university-level students and academic staff. The Platform is not directed at individuals under the age of 16. If you believe a minor has registered without authorization, please contact the system administrator immediately.</p>
+    </div>
+
+    <div class="legal-section" id="changes">
+      <h2>10. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in platform features or institutional requirements. Updated versions will be posted on this page with a revised date. Continued use of EvalPro after changes are posted constitutes your acceptance of the updated policy.</p>
+    </div>
+
+    <div class="legal-section" id="contact">
+      <h2>11. Contact Us</h2>
+      <p>If you have questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact:</p>
+      <ul>
+        <li><strong>Institution:</strong> Gomal University, United College Hazrat Sultan Bahoo</li>
+        <li><strong>Department:</strong> BSCS Program</li>
+        <li><strong>Email:</strong> muhammadhabeel633@gmail.com</li>
+      </ul>
+    </div>
+
+    <!-- Contact box -->
+    <div class="legal-contact-box">
+      <h3>&#128204; Questions About Your Privacy?</h3>
+      <p>Contact your supervisor or system administrator for any privacy-related concerns.</p>
+      <a href="index.html" class="btn btn-primary btn-auto" style="padding:10px 28px;">Back to Home</a>
+      &nbsp;
+      <a href="terms.html" class="btn btn-outline btn-auto" style="padding:10px 28px;">Terms of Service</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Eval<span>Pro</span></div>
+        <p class="footer-desc">Web-Based Project Evaluation and Management System &mdash; Gomal University, United College Hazrat Sultan Bahoo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="submission.html">Browse Projects</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="signup.html">Sign Up</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 EvalPro. All rights reserved.</span>
+      <span>BSCS Group 3 &mdash; Gomal University</span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

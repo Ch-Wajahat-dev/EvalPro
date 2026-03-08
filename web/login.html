@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/Stylee.css">
+</head>
+<body class="auth-page">
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <nav class="auth-navbar">
+    <a href="index.html" class="auth-logo">Eval<span>Pro</span></a>
+    <span style="color:rgba(255,255,255,.7);font-size:0.9rem;">Don't have an account? <a href="signup.html" class="auth-nav-link" style="color:var(--accent);font-weight:700;">Sign Up</a></span>
+  </nav>
+
+  <div class="auth-container">
+    <!-- Features Sidebar -->
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128274;</div>
+        <div class="auth-feature-text">
+          <h4>Secure Authentication</h4>
+          <p>JWT-based login with bcrypt password protection</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128203;</div>
+        <div class="auth-feature-text">
+          <h4>Submit Projects</h4>
+          <p>Browse and submit academic projects for evaluation</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#128202;</div>
+        <div class="auth-feature-text">
+          <h4>Track Evaluations</h4>
+          <p>Monitor your evaluation status in real-time</p>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">&#127775;</div>
+        <div class="auth-feature-text">
+          <h4>Evaluation Rubrics</h4>
+          <p>View grading criteria and deadline information</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-icon">&#128274;</div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to your EvalPro account</p>
+      </div>
+
+      <div class="auth-alert" id="auth-alert"></div>
+
+      <form class="auth-form" id="login-form" novalidate>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <span class="input-icon">&#9993;</span>
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">
+            Password
+            <a href="#" style="float:right;font-size:0.8rem;color:var(--primary);font-weight:500;">Forgot password?</a>
+          </label>
+          <div class="input-wrap">
+            <span class="input-icon">&#128275;</span>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button type="button" class="toggle-password" title="Toggle visibility">&#128065;&#65039;</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+          <input type="checkbox" id="remember" style="width:auto;margin:0;">
+          <label for="remember" style="margin:0;font-weight:400;font-size:0.88rem;color:var(--gray);">Remember me for 7 days</label>
+        </div>
+
+        <button type="submit" class="btn-auth">
+          <span>&#128274;</span> Sign In
+        </button>
+      </form>
+
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a href="signup.html">Create one free</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

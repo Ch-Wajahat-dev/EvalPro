@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supervisor Dashboard - EvalPro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-layout {
+      display: flex;
+      min-height: calc(100vh - 65px);
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: 240px;
+      background: var(--dark);
+      color: var(--white);
+      padding: 25px 0;
+      flex-shrink: 0;
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,.4);
+      padding: 0 20px 10px;
+    }
+
+    .sidebar-nav { list-style: none; }
+
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-nav li a:hover,
+    .sidebar-nav li a.active {
+      background: rgba(255,255,255,.08);
+      color: var(--white);
+      border-left-color: var(--accent);
+    }
+
+    .sidebar-nav li a .sidebar-icon { font-size: 1.1rem; }
+
+    /* Admin Content */
+    .admin-content { flex: 1; padding: 30px; overflow-x: hidden; }
+
+    .admin-page { display: none; }
+    .admin-page.active { display: block; }
+
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: gap; gap: 12px; }
+    .admin-header h2 { font-size: 1.5rem; font-weight: 800; color: var(--dark); }
+
+    /* Stats Cards */
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-bottom: 30px; }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .stat-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-card-icon.blue { background: #dbeafe; }
+    .stat-card-icon.green { background: #dcfce7; }
+    .stat-card-icon.yellow { background: #fef9c3; }
+    .stat-card-icon.purple { background: #ede9fe; }
+
+    .stat-card-info h3 { font-size: 1.7rem; font-weight: 800; color: var(--dark); line-height: 1; }
+    .stat-card-info p { font-size: 0.82rem; color: var(--gray); margin-top: 3px; }
+
+    /* Table */
+    .admin-table-wrap { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      background: var(--primary);
+      color: var(--white);
+      padding: 13px 16px;
+      text-align: left;
+      font-size: 0.83rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .admin-table td {
+      padding: 13px 16px;
+      font-size: 0.87rem;
+      color: var(--dark);
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: var(--light-gray); }
+
+    /* Action buttons */
+    .action-btns { display: flex; gap: 6px; }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .btn-icon:hover { border-color: var(--primary); background: #eff6ff; }
+    .btn-icon.danger:hover { border-color: var(--danger); background: #fee2e2; }
+
+    /* Modal form */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    /* Rubric card admin */
+    .rubric-admin-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      box-shadow: var(--shadow);
+    }
+
+    .rubric-admin-card .rubric-info { flex: 1; }
+    .rubric-admin-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .rubric-admin-card p { font-size: 0.83rem; color: var(--gray); margin-bottom: 8px; }
+
+    .rubrics-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+
+    /* Status select */
+    .status-select {
+      width: auto;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      margin: 0;
+    }
+
+    /* Overflow responsive */
+    .table-responsive { overflow-x: auto; }
+
+    /* Proposal filter tabs */
+    .eval-tab {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 2px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--gray);
+      transition: var(--transition);
+    }
+    .eval-tab:hover { opacity: 0.8; }
+    .eval-tab.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+    /* Mobile admin nav */
+    .admin-mobile-nav {
+      display: none;
+      background: var(--dark);
+      overflow-x: auto;
+      scrollbar-width: none;
+      position: sticky;
+      top: 65px;
+      z-index: 90;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .admin-mobile-nav::-webkit-scrollbar { display: none; }
+    .admin-mobile-nav-inner {
+      display: flex;
+      gap: 0;
+      min-width: max-content;
+      padding: 0 8px;
+    }
+    .admin-mobile-nav-inner a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 14px;
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: var(--transition);
+    }
+    .admin-mobile-nav-inner a:hover,
+    .admin-mobile-nav-inner a.active {
+      color: var(--white);
+      border-bottom-color: var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar { display: none; }
+      .admin-mobile-nav { display: block; }
+      .admin-content { padding: 20px 12px; }
+      .form-row { grid-template-columns: 1fr; }
+      .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 16px 12px; gap: 10px; }
+      .stat-card-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+      .stat-card-info h3 { font-size: 1.4rem; }
+      .admin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .rubrics-admin-grid { grid-template-columns: 1fr; }
+      .table-responsive { font-size: 0.82rem; }
+      .admin-table th, .admin-table td { padding: 10px 10px; }
+    }
+
+    @media (max-width: 480px) {
+      .admin-content { padding: 15px 10px; }
+      .admin-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .stat-card-info h3 { font-size: 1.2rem; }
+      .stat-card-info p { font-size: 0.75rem; }
+      .admin-table th, .admin-table td { padding: 8px 8px; font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="page-loader">
+    <div class="loader-logo">Eval<span style="color:var(--accent)">Pro</span></div>
+    <div class="loader-spinner"></div>
+  </div>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="navbar-brand">Eval<span>Pro</span></a>
+      <ul class="navbar-nav" id="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="submission.html">Projects</a></li>
+        <li id="nav-admin"><a href="admin.html" class="active">Supervisor Panel</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <div id="nav-auth" style="display:flex;gap:8px;">
+          <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:10px;">
+          <span class="nav-user-info">&#128736; Supervisor: <span class="nav-user-name"></span></span>
+          <button id="btn-logout" class="btn-nav btn-nav-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile nav (visible only on small screens) -->
+  <nav class="admin-mobile-nav" id="admin-mobile-nav">
+    <div class="admin-mobile-nav-inner">
+      <a href="#" class="active" onclick="showPage('overview');setMobileActive(this)">&#128200; Overview</a>
+      <a href="#" onclick="showPage('projects');setMobileActive(this)">&#128196; Projects</a>
+      <a href="#" onclick="showPage('proposals');setMobileActive(this)">&#128221; Proposals</a>
+      <a href="#" onclick="showPage('evaluations');setMobileActive(this)">&#128202; Evaluations</a>
+      <a href="#" onclick="showPage('rubrics');setMobileActive(this)">&#127775; Rubrics</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <div class="admin-sidebar">
+        <div class="sidebar-title">Dashboard</div>
+        <ul class="sidebar-nav">
+          <li><a href="#" class="active" onclick="showPage('overview')"><span class="sidebar-icon">&#128200;</span> Overview</a></li>
+          <li><a href="#" onclick="showPage('projects')"><span class="sidebar-icon">&#128196;</span> Projects</a></li>
+          <li><a href="#" onclick="showPage('proposals')"><span class="sidebar-icon">&#128221;</span> Proposals <span id="proposal-badge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:0.7rem;margin-left:4px;display:none;"></span></a></li>
+          <li><a href="#" onclick="showPage('evaluations')"><span class="sidebar-icon">&#128202;</span> Evaluations</a></li>
+          <li><a href="#" onclick="showPage('rubrics')"><span class="sidebar-icon">&#127775;</span> Rubrics</a></li>
+        </ul>
+        <div class="sidebar-title" style="margin-top:30px;">System</div>
+        <ul class="sidebar-nav">
+          <li><a href="index.html"><span class="sidebar-icon">&#127968;</span> View Site</a></li>
+          <li><a href="#" onclick="logout()"><span class="sidebar-icon">&#128274;</span> Logout</a></li>
+        </ul>
+      </div>
+
+      <!-- Admin Content -->
+      <div class="admin-content">
+        <!-- Overview Page -->
+        <div class="admin-page active" id="page-overview">
+          <div class="admin-header">
+            <h2>&#128200; Dashboard Overview</h2>
+            <span style="font-size:0.88rem;color:var(--gray);">EvalPro Supervisor Panel</span>
+          </div>
+
+          <div class="admin-stats" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-icon blue">&#128196;</div>
+              <div class="stat-card-info"><h3 id="stat-projects">—</h3><p>Total Projects</p></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon yellow">&#128203;</div>
+              <div class="stat-card-info"><h3 id="stat-submitted">—</h3><p>Submitted</p></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon purple">&#128270;</div>
+              <div class="stat-card-info"><h3 id="stat-review">—</h3><p>Under Review</p></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-icon green">&#10003;</div>
+              <div class="stat-card-info"><h3 id="stat-approved">—</h3><p>Approved Evals</p></div>
+            </div>
+            <div class="stat-card" style="cursor:pointer;" onclick="showPage('proposals')">
+              <div class="stat-card-icon" style="background:#fef3c7;">&#128221;</div>
+              <div class="stat-card-info"><h3 id="stat-pending-proposals">—</h3><p>Pending Proposals</p></div>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <div style="padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <h3 style="font-size:1rem;font-weight:700;">Recent Evaluations</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Projects</th>
+                    <th>Score</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-evals-table">
+                  <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gray);">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Page -->
+        <div class="admin-page" id="page-projects">
+          <div class="admin-header">
+            <h2>&#128196; Manage Projects</h2>
+            <button class="btn btn-primary btn-auto" style="padding:10px 20px;" onclick="openAddProject()">+ Add Project</button>
+          </div>
+          <div id="projects-alert" style="margin-bottom:15px;"></div>
+          <div class="admin-table-wrap">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Student</th>
+                    <th>Category</th>
+                    <th>Score</th>
+                    <th>Approval</th>
+                    <th>Active</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="projects-table">
+                  <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--gray);">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proposals Page -->
+        <div class="admin-page" id="page-proposals">
+          <div class="admin-header">
+            <h2>&#128221; Projects &amp; Proposals</h2>
+            <button class="btn btn-outline btn-auto" style="padding:9px 18px;font-size:0.88rem;" onclick="loadAdminProposals()">&#8635; Refresh</button>
+          </div>
+          <div id="proposals-alert" style="margin-bottom:15px;"></div>
+          <!-- Summary Stats -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px;">
+            <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;text-align:center;box-shadow:var(--shadow);">
+              <div style="font-size:1.8rem;font-weight:800;color:var(--dark);" id="pstat-total">0</div>
+              <div style="font-size:0.78rem;color:var(--gray);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Total</div>
+            </div>
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:16px 18px;text-align:center;box-shadow:var(--shadow);cursor:pointer;" onclick="filterProposals('pending', document.querySelector('#proposals-tabs .eval-tab:nth-child(2)'))">
+              <div style="font-size:1.8rem;font-weight:800;color:#d97706;" id="pstat-pending">0</div>
+              <div style="font-size:0.78rem;color:#92400e;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Pending</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 18px;text-align:center;box-shadow:var(--shadow);cursor:pointer;" onclick="filterProposals('approved', document.querySelector('#proposals-tabs .eval-tab:nth-child(3)'))">
+              <div style="font-size:1.8rem;font-weight:800;color:#16a34a;" id="pstat-approved">0</div>
+              <div style="font-size:0.78rem;color:#166534;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Approved</div>
+            </div>
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:16px 18px;text-align:center;box-shadow:var(--shadow);cursor:pointer;" onclick="filterProposals('rejected', document.querySelector('#proposals-tabs .eval-tab:nth-child(4)'))">
+              <div style="font-size:1.8rem;font-weight:800;color:#dc2626;" id="pstat-rejected">0</div>
+              <div style="font-size:0.78rem;color:#991b1b;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Rejected</div>
+            </div>
+          </div>
+          <!-- Filter Tabs -->
+          <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;" id="proposals-tabs">
+            <button class="eval-tab active" onclick="filterProposals('all', this)">All <span id="ptab-all">0</span></button>
+            <button class="eval-tab" onclick="filterProposals('pending', this)" style="border-color:#d97706;color:#d97706;">Pending <span id="ptab-pending">0</span></button>
+            <button class="eval-tab" onclick="filterProposals('approved', this)" style="border-color:#16a34a;color:#16a34a;">Approved <span id="ptab-approved">0</span></button>
+            <button class="eval-tab" onclick="filterProposals('rejected', this)" style="border-color:#dc2626;color:#dc2626;">Rejected <span id="ptab-rejected">0</span></button>
+          </div>
+          <div id="proposals-grid" style="display:flex;flex-direction:column;gap:15px;">
+            <div style="text-align:center;padding:40px;color:var(--gray);">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Evaluations Page -->
+        <div class="admin-page" id="page-evaluations">
+          <div class="admin-header">
+            <h2>&#128202; Manage Evaluations</h2>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <select class="filter-select" id="eval-status-filter" style="width:auto;padding:9px 12px;font-size:0.85rem;" onchange="filterAdminEvals()">
+                <option value="">All Statuses</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Under Review">Under Review</option>
+                <option value="Evaluated">Evaluated</option>
+                <option value="Approved">Approved</option>
+              </select>
+            </div>
+          </div>
+          <div id="evals-alert" style="margin-bottom:15px;"></div>
+          <div class="admin-table-wrap">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Projects</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Update Status</th>
+                    <th>Feedback</th>
+                  </tr>
+                </thead>
+                <tbody id="evals-table">
+                  <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--gray);">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rubrics Page -->
+        <div class="admin-page" id="page-rubrics">
+          <div class="admin-header">
+            <h2>&#127775; Evaluation Rubrics</h2>
+            <button class="btn btn-primary btn-auto" style="padding:10px 20px;" onclick="openAddRubric()">+ Add Rubric</button>
+          </div>
+          <div id="rubrics-alert" style="margin-bottom:15px;"></div>
+          <div class="rubrics-admin-grid" id="rubrics-admin-grid">
+            <div style="text-align:center;padding:40px;color:var(--gray);">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Project Modal -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 id="project-modal-title">Add New Project</h3>
+        <button class="modal-close" onclick="closeModal('project-modal')">&#10005;</button>
+      </div>
+      <form id="project-form" enctype="multipart/form-data">
+        <input type="hidden" id="project-edit-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Name *</label>
+            <input type="text" id="p-name" placeholder="Enter project name" required>
+          </div>
+          <div class="form-group">
+            <label>Student Name</label>
+            <input type="text" id="p-student" placeholder="Student's name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea id="p-description" placeholder="Project description..." rows="3" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Score (0-100) *</label>
+            <input type="number" id="p-score" min="0" max="100" placeholder="e.g. 85" required>
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="p-category" required>
+              <option value="">Select...</option>
+              <option value="Web Application">Web Application</option>
+              <option value="Mobile Application">Mobile Application</option>
+              <option value="AI/ML">AI/ML</option>
+              <option value="IoT">IoT</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Desktop Application">Desktop Application</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Image</label>
+            <input type="file" id="p-image" accept="image/*" style="padding:7px;">
+          </div>
+          <div class="form-group">
+            <label>Document (PDF)</label>
+            <input type="file" id="p-document" accept=".pdf,.doc,.docx" style="padding:7px;">
+          </div>
+        </div>
+        <div id="project-form-alert"></div>
+        <button type="submit" class="btn btn-primary" id="project-submit-btn">Add Project</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Rubric Modal -->
+  <div class="modal-overlay" id="rubric-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Evaluation Rubric</h3>
+        <button class="modal-close" onclick="closeModal('rubric-modal')">&#10005;</button>
+      </div>
+      <form id="rubric-form">
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" id="r-title" placeholder="Rubric title" required>
+        </div>
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea id="r-description" placeholder="Describe the evaluation criteria..." rows="3" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Bonus % (0-100)</label>
+            <input type="number" id="r-discount" min="0" max="100" value="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Deadline *</label>
+            <input type="datetime-local" id="r-endtime" required>
+          </div>
+        </div>
+        <!-- Criteria -->
+        <div class="form-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <label style="margin:0;">Grading Criteria <span style="color:var(--gray);font-weight:400;font-size:0.78rem;">(optional)</span></label>
+            <button type="button" class="btn btn-outline btn-auto" style="padding:5px 12px;font-size:0.8rem;" onclick="addCriteriaRow()">+ Add Criterion</button>
+          </div>
+          <div id="criteria-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+        <div id="rubric-form-alert"></div>
+        <button type="submit" class="btn btn-primary" id="rubric-submit-btn">Create Rubric</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal-overlay" id="feedback-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>&#128221; Supervisor Feedback & Score</h3>
+        <button class="modal-close" onclick="closeModal('feedback-modal')">&#10005;</button>
+      </div>
+      <input type="hidden" id="feedback-eval-id">
+      <input type="hidden" id="feedback-eval-status">
+      <div class="form-group">
+        <label>Supervisor Score (0–100)</label>
+        <input type="number" id="feedback-score" min="0" max="100" placeholder="e.g. 87 — leave blank to keep unchanged">
+      </div>
+      <div class="form-group">
+        <label>Feedback / Comments</label>
+        <textarea id="feedback-text" placeholder="Enter detailed supervisor feedback visible to the student..." rows="4"></textarea>
+      </div>
+      <div id="feedback-alert"></div>
+      <button class="btn btn-primary" onclick="submitFeedback()">Save Feedback &amp; Score</button>
+    </div>
+  </div>
+
+  <!-- Approve Proposal Modal -->
+  <div class="modal-overlay" id="approve-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>&#10003; Approve Proposal</h3>
+        <button class="modal-close" onclick="closeModal('approve-modal')">&#10005;</button>
+      </div>
+      <input type="hidden" id="approve-proposal-id">
+      <p style="font-size:0.88rem;color:var(--gray);margin-bottom:18px;">Set the official score for this project before approving.</p>
+      <div class="form-group">
+        <label>Official Score (0–100) *</label>
+        <input type="number" id="approve-score" min="0" max="100" placeholder="e.g. 85" required>
+      </div>
+      <div id="approve-alert"></div>
+      <button class="btn btn-success" onclick="submitApproval('approve')">&#10003; Approve &amp; Publish</button>
+    </div>
+  </div>
+
+  <!-- Reject Proposal Modal -->
+  <div class="modal-overlay" id="reject-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>&#10007; Reject Proposal</h3>
+        <button class="modal-close" onclick="closeModal('reject-modal')">&#10005;</button>
+      </div>
+      <input type="hidden" id="reject-proposal-id">
+      <div class="form-group">
+        <label>Rejection Reason (shown to student)</label>
+        <textarea id="reject-note" rows="3" placeholder="Explain why the proposal is being rejected..."></textarea>
+      </div>
+      <div id="reject-alert"></div>
+      <button class="btn btn-danger" onclick="submitApproval('reject')">&#10007; Reject Proposal</button>
+    </div>
+  </div>
+
+  <!-- Eval Detail Modal -->
+  <div class="modal-overlay" id="eval-detail-modal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <h3>&#128202; Evaluation Details</h3>
+        <button class="modal-close" onclick="closeModal('eval-detail-modal')">&#10005;</button>
+      </div>
+      <div id="eval-detail-body"></div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    let allProjects = [];
+    let allEvals = [];
+    let allRubrics = [];
+    let allProposals = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!isLoggedIn() || !isAdmin()) {
+        window.location.href = '/web/login.html';
+        return;
+      }
+      await Promise.all([
+        loadDashboard(),
+        loadAdminProjects(),
+        loadAdminEvals(),
+        loadAdminRubrics(),
+        loadAdminProposals()
+      ]);
+    });
+
+    // ---- Navigation ----
+    function showPage(page) {
+      document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+      document.querySelectorAll('.sidebar-nav li a').forEach(a => a.classList.remove('active'));
+      const activeLink = document.querySelector(`.sidebar-nav li a[onclick="showPage('${page}')"]`);
+      if (activeLink) activeLink.classList.add('active');
+      // Reload data when switching tabs
+      if (page === 'proposals') loadAdminProposals();
+      if (page === 'evaluations') loadAdminEvals();
+      if (page === 'projects') loadAdminProjects();
+      if (page === 'rubrics') loadAdminRubrics();
+    }
+
+    function setMobileActive(el) {
+      document.querySelectorAll('.admin-mobile-nav-inner a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function logout() {
+      clearAuth();
+      window.location.href = '/web/login.html';
+    }
+
+    // ---- Dashboard Stats ----
+    async function loadDashboard() {
+      const [projectsRes, evalsRes, proposalsRes] = await Promise.allSettled([
+        apiFetch('/projects/proposals?mode=all'),
+        apiFetch('/evaluations'),
+        apiFetch('/projects/proposals')
+      ]);
+
+      const projects  = projectsRes.status  === 'fulfilled' ? projectsRes.value  : [];
+      const evals     = evalsRes.status     === 'fulfilled' ? evalsRes.value     : [];
+      const proposals = proposalsRes.status === 'fulfilled' ? proposalsRes.value : [];
+
+document.getElementById('stat-projects').textContent = projects.filter(p => p.approvalStatus === 'approved').length;
+      document.getElementById('stat-submitted').textContent = evals.filter(e => e.status === 'Submitted').length;
+      document.getElementById('stat-review').textContent = evals.filter(e => e.status === 'Under Review').length;
+      document.getElementById('stat-approved').textContent = evals.filter(e => e.status === 'Approved').length;
+
+      const pendingCount = proposals.filter(p => p.approvalStatus === 'pending').length;
+      document.getElementById('stat-pending-proposals').textContent = pendingCount;
+
+      const tbody = document.getElementById('recent-evals-table');
+      if (evals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:25px;color:var(--gray)">No evaluations yet</td></tr>';
+        return;
+      }
+      tbody.innerHTML = evals.slice(0, 8).map(e => `
+        <tr>
+          <td>
+            <strong>${escHtml(e.user?.name || 'Unknown')}</strong><br>
+            <span style="font-size:0.75rem;color:var(--gray)">${escHtml(e.user?.email || '')}</span>
+          </td>
+          <td>
+            <span style="font-size:0.82rem;">${(e.items || []).map(i => escHtml(i.project?.name || 'Project')).join(', ') || '—'}</span>
+          </td>
+          <td><strong style="color:var(--primary)">${e.totalScore}</strong> pts</td>
+          <td>${e.scoringMethod}</td>
+          <td>${statusBadge(e.status)}</td>
+          <td>${formatDate(e.createdAt)}</td>
+          <td>
+            <select class="status-select" onchange="quickUpdateStatus('${e._id}', this.value)">
+              ${['Submitted','Under Review','Evaluated','Approved'].map(s =>
+                `<option value="${s}" ${s === e.status ? 'selected' : ''}>${s}</option>`
+              ).join('')}
+            </select>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ---- Projects ----
+    async function loadAdminProjects() {
+      try {
+        // Use admin-all to get ALL projects (approved, active, inactive)
+        allProjects = await apiFetch('/projects/proposals?mode=all');
+        renderProjectsTable();
+      } catch (err) { showAlert('projects-alert', err.message, 'error'); }
+    }
+
+    function renderProjectsTable() {
+      const tbody = document.getElementById('projects-table');
+      if (allProjects.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:25px;color:var(--gray)">No projects yet. Add one above.</td></tr>';
+        return;
+      }
+      const approvalColor = { approved: 'var(--success)', pending: '#d97706', rejected: 'var(--danger)' };
+      tbody.innerHTML = allProjects.map(p => `
+        <tr style="opacity:${p.inStatus ? '1' : '0.6'}">
+          <td>
+            <strong>${escHtml(p.name)}</strong>
+            ${p.proposedBy ? `<br><span style="font-size:0.72rem;color:var(--primary);">&#128100; Student proposal</span>` : ''}
+          </td>
+          <td>${escHtml(p.studentName || p.proposedBy?.name || '—')}</td>
+          <td><span style="font-size:0.75rem;background:#eff6ff;color:var(--primary);padding:3px 9px;border-radius:12px;font-weight:600;">${p.category}</span></td>
+          <td><strong style="color:var(--primary)">${p.score}</strong> pts</td>
+          <td>
+            <span style="font-size:0.78rem;font-weight:700;color:${approvalColor[p.approvalStatus] || 'var(--gray)'};">
+              ${p.approvalStatus.charAt(0).toUpperCase() + p.approvalStatus.slice(1)}
+            </span>
+          </td>
+          <td>
+            <span style="color:${p.inStatus ? 'var(--success)' : 'var(--danger)'};font-weight:600;font-size:0.82rem;">
+              ${p.inStatus ? '&#9679; Yes' : '&#9675; No'}
+            </span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="btn-icon" onclick="toggleProjectStatus('${p._id}')" title="${p.inStatus ? 'Deactivate' : 'Activate'}" style="font-size:0.75rem;width:auto;padding:4px 8px;">
+                ${p.inStatus ? '&#128683; Off' : '&#9989; On'}
+              </button>
+              <button class="btn-icon" onclick="openEditProject('${p._id}')" title="Edit">&#9998;</button>
+              <button class="btn-icon danger" onclick="deleteProject('${p._id}')" title="Delete">&#128465;</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function toggleProjectStatus(id) {
+      const p = allProjects.find(x => x._id === id);
+      if (!p) return;
+      try {
+        const token = getToken();
+        const res = await fetch(`${API_BASE}/projects/${id}`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: new URLSearchParams({ inStatus: String(!p.inStatus) })
+        });
+        if (!res.ok) throw new Error('Failed to update status');
+        await loadAdminProjects();
+        showAlert('projects-alert', `Project ${!p.inStatus ? 'activated' : 'deactivated'}.`, 'success');
+      } catch (err) { showAlert('projects-alert', err.message, 'error'); }
+    }
+
+    function openAddProject() {
+      document.getElementById('project-modal-title').textContent = 'Add New Project';
+      document.getElementById('project-submit-btn').textContent = 'Add Project';
+      document.getElementById('project-edit-id').value = '';
+      document.getElementById('project-form').reset();
+      document.getElementById('project-form-alert').innerHTML = '';
+      document.getElementById('project-modal').classList.add('show');
+    }
+
+    function openEditProject(id) {
+      const p = allProjects.find(x => x._id === id);
+      if (!p) return;
+      document.getElementById('project-modal-title').textContent = 'Edit Project';
+      document.getElementById('project-submit-btn').textContent = 'Update Project';
+      document.getElementById('project-edit-id').value = id;
+      document.getElementById('p-name').value = p.name;
+      document.getElementById('p-student').value = p.studentName || '';
+      document.getElementById('p-description').value = p.description;
+      document.getElementById('p-score').value = p.score;
+      document.getElementById('p-category').value = p.category;
+      document.getElementById('project-form-alert').innerHTML = '';
+      document.getElementById('project-modal').classList.add('show');
+    }
+
+    document.getElementById('project-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('project-submit-btn');
+      const editId = document.getElementById('project-edit-id').value;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+      const formData = new FormData();
+      formData.append('name', document.getElementById('p-name').value.trim());
+      formData.append('studentName', document.getElementById('p-student').value.trim());
+      formData.append('description', document.getElementById('p-description').value.trim());
+      formData.append('score', document.getElementById('p-score').value);
+      formData.append('category', document.getElementById('p-category').value);
+      // For new projects: default active. For edits: preserve current inStatus (don't send it so route won't change it)
+      if (!editId) formData.append('inStatus', 'true');
+      const imgFile = document.getElementById('p-image').files[0];
+      const docFile = document.getElementById('p-document').files[0];
+      if (imgFile) formData.append('image', imgFile);
+      if (docFile) formData.append('document', docFile);
+
+      try {
+        const token = getToken();
+        const url = editId ? `${API_BASE}/projects/${editId}` : `${API_BASE}/projects`;
+        const method = editId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method,
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed');
+        closeModal('project-modal');
+        await loadAdminProjects();
+        await loadDashboard();
+        showAlert('projects-alert', `Project ${editId ? 'updated' : 'added'} successfully!`, 'success');
+      } catch (err) {
+        document.getElementById('project-form-alert').innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = editId ? 'Update Project' : 'Add Project';
+      }
+    });
+
+    async function deleteProject(id) {
+      if (!confirm('Delete this project? This cannot be undone.')) return;
+      try {
+        await apiFetch(`/projects/${id}`, { method: 'DELETE' });
+        await loadAdminProjects();
+        await loadDashboard();
+        showAlert('projects-alert', 'Project deleted.', 'success');
+      } catch (err) { showAlert('projects-alert', err.message, 'error'); }
+    }
+
+    // ---- Evaluations ----
+    async function loadAdminEvals() {
+      try {
+        allEvals = await apiFetch('/evaluations');
+        renderEvalsTable(allEvals);
+      } catch (err) { showAlert('evals-alert', err.message, 'error'); }
+    }
+
+    function filterAdminEvals() {
+      const status = document.getElementById('eval-status-filter').value;
+      const filtered = status ? allEvals.filter(e => e.status === status) : allEvals;
+      renderEvalsTable(filtered);
+    }
+
+    function renderEvalsTable(evals) {
+      const tbody = document.getElementById('evals-table');
+      if (evals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:25px;color:var(--gray)">No evaluations found</td></tr>';
+        return;
+      }
+      tbody.innerHTML = evals.map(e => {
+        const projectNames = (e.items || []).map(i => escHtml(i.project?.name || 'Project')).join('<br>');
+        const hasFeedback = e.feedback || e.supervisorScore != null;
+        return `
+          <tr>
+            <td style="font-size:0.75rem;color:var(--gray)">
+              #${e._id.substring(0,8).toUpperCase()}<br>
+              <span style="cursor:pointer;color:var(--primary);text-decoration:underline;" onclick="viewEvalDetail('${e._id}')">View Details</span>
+            </td>
+            <td>
+              <strong>${escHtml(e.user?.name || 'Unknown')}</strong><br>
+              <span style="font-size:0.75rem;color:var(--gray)">${escHtml(e.user?.email || '')}</span>
+            </td>
+            <td style="font-size:0.82rem;max-width:180px;">${projectNames || '—'}</td>
+            <td>
+              <strong style="color:var(--primary)">${e.totalScore}</strong> pts
+              ${e.supervisorScore != null ? `<br><span style="font-size:0.75rem;color:var(--success);font-weight:600;">Scored: ${e.supervisorScore}/100</span>` : ''}
+            </td>
+            <td>${statusBadge(e.status)}</td>
+            <td>${formatDate(e.createdAt)}</td>
+            <td>
+              <select class="status-select" onchange="quickUpdateStatus('${e._id}', this.value)">
+                ${['Submitted','Under Review','Evaluated','Approved'].map(s =>
+                  `<option value="${s}" ${s === e.status ? 'selected' : ''}>${s}</option>`
+                ).join('')}
+              </select>
+            </td>
+            <td>
+              <button onclick="openFeedbackById('${e._id}')" style="background:${hasFeedback ? 'var(--success)' : 'var(--primary)'};color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                &#128221; ${hasFeedback ? 'Edit' : 'Add'} Feedback
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function viewEvalDetail(evalId) {
+      const ev = allEvals.find(e => e._id === evalId);
+      if (!ev) return;
+      const body = document.getElementById('eval-detail-body');
+      body.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div>
+              <strong>${escHtml(ev.user?.name || 'Unknown')}</strong>
+              <div style="font-size:0.82rem;color:var(--gray)">${escHtml(ev.user?.email || '')}</div>
+            </div>
+            ${statusBadge(ev.status)}
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem;margin-bottom:14px;">
+            <div><span style="color:var(--gray)">Submitted:</span> <strong>${formatDate(ev.createdAt)}</strong></div>
+            <div><span style="color:var(--gray)">Scoring:</span> <strong>${ev.scoringMethod}</strong></div>
+            <div><span style="color:var(--gray)">Total Score:</span> <strong style="color:var(--primary)">${ev.totalScore} pts</strong></div>
+            ${ev.supervisorScore != null ? `<div><span style="color:var(--gray)">Supervisor Score:</span> <strong style="color:var(--success)">${ev.supervisorScore}/100</strong></div>` : ''}
+            ${ev.phone ? `<div><span style="color:var(--gray)">Phone:</span> <strong>${escHtml(ev.phone)}</strong></div>` : ''}
+          </div>
+          ${ev.supervisorComments ? `<div style="background:#f8fafc;border-radius:7px;padding:12px;font-size:0.85rem;margin-bottom:10px;"><strong>Student Comments:</strong><br>${escHtml(ev.supervisorComments)}</div>` : ''}
+          ${ev.feedback ? `<div style="background:#dcfce7;border:1px solid #bbf7d0;border-radius:7px;padding:12px;font-size:0.85rem;margin-bottom:10px;"><strong style="color:#166534;">Supervisor Feedback:</strong><br>${escHtml(ev.feedback)}</div>` : ''}
+        </div>
+        <h4 style="font-size:0.9rem;font-weight:700;margin-bottom:10px;">Submitted Projects</h4>
+        ${(ev.items || []).map(item => `
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:#f8fafc;border-radius:8px;margin-bottom:8px;">
+            <span style="font-size:1.3rem;">${getCategoryIcon(item.project?.category)}</span>
+            <div style="flex:1;">
+              <div style="font-size:0.88rem;font-weight:600;">${escHtml(item.project?.name || 'Project')}</div>
+              <div style="font-size:0.78rem;color:var(--gray);">${item.project?.category || ''} &bull; x${item.quantity}</div>
+            </div>
+            <strong style="color:var(--primary)">${(item.project?.score || 0) * item.quantity} pts</strong>
+          </div>
+        `).join('')}
+        <div style="margin-top:14px;display:flex;gap:10px;">
+          <button onclick="openFeedbackById('${ev._id}');closeModal('eval-detail-modal')" class="btn btn-primary btn-auto" style="padding:9px 18px;font-size:0.88rem;">
+            &#128221; ${ev.feedback || ev.supervisorScore != null ? 'Edit' : 'Add'} Feedback
+          </button>
+          <button onclick="closeModal('eval-detail-modal')" class="btn btn-outline btn-auto" style="padding:9px 18px;font-size:0.88rem;">Close</button>
+        </div>
+      `;
+      document.getElementById('eval-detail-modal').classList.add('show');
+    }
+
+    async function quickUpdateStatus(evalId, status) {
+      try {
+        await apiFetch(`/evaluations/${evalId}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+        const idx = allEvals.findIndex(e => e._id === evalId);
+        if (idx !== -1) allEvals[idx].status = status;
+        // Only re-render evals table if that tab is currently visible
+        if (document.getElementById('page-evaluations')?.classList.contains('active')) {
+          renderEvalsTable(allEvals);
+        }
+        await loadDashboard();
+      } catch (err) { alert('Error: ' + err.message); }
+    }
+
+    function openFeedbackById(evalId) {
+      const ev = allEvals.find(e => e._id === evalId);
+      if (!ev) return;
+      document.getElementById('feedback-eval-id').value = ev._id;
+      document.getElementById('feedback-eval-status').value = ev.status;
+      document.getElementById('feedback-text').value = ev.feedback || '';
+      document.getElementById('feedback-score').value = ev.supervisorScore != null ? ev.supervisorScore : '';
+      document.getElementById('feedback-alert').innerHTML = '';
+      document.getElementById('feedback-modal').classList.add('show');
+    }
+
+    async function submitFeedback() {
+      const evalId = document.getElementById('feedback-eval-id').value;
+      const status = document.getElementById('feedback-eval-status').value;
+      const feedback = document.getElementById('feedback-text').value.trim();
+      const scoreVal = document.getElementById('feedback-score').value;
+      const supervisorScore = scoreVal !== '' ? Number(scoreVal) : undefined;
+
+      if (supervisorScore !== undefined && (isNaN(supervisorScore) || supervisorScore < 0 || supervisorScore > 100)) {
+        document.getElementById('feedback-alert').innerHTML = `<div class="alert alert-error">Score must be a number between 0 and 100.</div>`;
+        return;
+      }
+
+      const btn = document.querySelector('#feedback-modal .btn-primary');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+      try {
+        const updated = await apiFetch(`/evaluations/${evalId}/status`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status, feedback, supervisorScore })
+        });
+        // Update in-memory
+        const idx = allEvals.findIndex(e => e._id === evalId);
+        if (idx !== -1) {
+          allEvals[idx].feedback = feedback;
+          allEvals[idx].supervisorScore = supervisorScore ?? allEvals[idx].supervisorScore;
+          allEvals[idx].status = status;
+        }
+        closeModal('feedback-modal');
+        renderEvalsTable(allEvals);
+        await loadDashboard();
+        showAlert('evals-alert', 'Feedback and score saved successfully!', 'success');
+      } catch (err) {
+        document.getElementById('feedback-alert').innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Save Feedback &amp; Score';
+      }
+    }
+
+    // ---- Rubrics ----
+    async function loadAdminRubrics() {
+      try {
+        allRubrics = await apiFetch('/rubrics/all');
+        renderRubricsAdmin();
+      } catch (err) { showAlert('rubrics-alert', err.message, 'error'); }
+    }
+
+    function renderRubricsAdmin() {
+      const grid = document.getElementById('rubrics-admin-grid');
+      if (allRubrics.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;padding:50px;color:var(--gray);"><div style="font-size:3rem;opacity:.3;margin-bottom:12px;">&#127775;</div><p>No rubrics yet. Click "+ Add Rubric" to create one.</p></div>';
+        return;
+      }
+      grid.innerHTML = allRubrics.map(r => {
+        const deadline = new Date(r.endTime);
+        const expired = deadline < new Date();
+        return `
+          <div class="rubric-admin-card" style="${!r.isActive || expired ? 'opacity:0.7;' : ''}">
+            <div class="rubric-info">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <h4 style="margin:0;">${escHtml(r.title)}</h4>
+                ${expired ? '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">EXPIRED</span>' : ''}
+              </div>
+              <p>${escHtml(r.description)}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;font-size:0.8rem;color:var(--gray);">
+                <span>&#127381; Bonus: <strong>${r.discountPercentage}%</strong></span>
+                <span>&#128197; Deadline: <strong>${deadline.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</strong></span>
+                <span>Status: <strong style="color:${r.isActive && !expired ? 'var(--success)' : 'var(--danger)'}">${r.isActive && !expired ? 'Active' : expired ? 'Expired' : 'Inactive'}</strong></span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;min-width:100px;">
+              <button class="btn btn-sm ${r.isActive ? 'btn-outline' : 'btn-success'} btn-auto" onclick="toggleRubric('${r._id}')">
+                ${r.isActive ? '&#9679; Deactivate' : '&#9989; Activate'}
+              </button>
+              <button class="btn btn-sm btn-danger btn-auto" onclick="deleteRubric('${r._id}')">&#128465; Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddRubric() {
+      document.getElementById('rubric-form').reset();
+      document.getElementById('rubric-form-alert').innerHTML = '';
+      document.getElementById('criteria-list').innerHTML = '';
+      // Set min deadline to now
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('r-endtime').min = now.toISOString().slice(0,16);
+      document.getElementById('rubric-modal').classList.add('show');
+    }
+
+    function addCriteriaRow() {
+      const list = document.getElementById('criteria-list');
+      const idx = list.children.length;
+      const row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:1fr 80px auto;gap:8px;align-items:center;';
+      row.innerHTML = `
+        <input type="text" placeholder="Criterion name (e.g. Design)" class="criteria-name" style="margin:0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;">
+        <input type="number" placeholder="Max pts" class="criteria-score" min="1" max="100" style="margin:0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;text-align:center;">
+        <button type="button" onclick="this.parentNode.remove()" style="background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:0.85rem;">&#10005;</button>
+      `;
+      list.appendChild(row);
+    }
+
+    function collectCriteria() {
+      const rows = document.querySelectorAll('#criteria-list > div');
+      const criteria = [];
+      rows.forEach(row => {
+        const name = row.querySelector('.criteria-name')?.value.trim();
+        const maxScore = Number(row.querySelector('.criteria-score')?.value);
+        if (name && maxScore > 0) criteria.push({ name, maxScore, description: '' });
+      });
+      return criteria;
+    }
+
+    document.getElementById('rubric-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('rubric-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Creating...';
+      try {
+        await apiFetch('/rubrics', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: document.getElementById('r-title').value.trim(),
+            description: document.getElementById('r-description').value.trim(),
+            discountPercentage: Number(document.getElementById('r-discount').value) || 0,
+            endTime: document.getElementById('r-endtime').value,
+            criteria: collectCriteria()
+          })
+        });
+        closeModal('rubric-modal');
+        await loadAdminRubrics();
+        showAlert('rubrics-alert', 'Rubric created successfully!', 'success');
+      } catch (err) {
+        document.getElementById('rubric-form-alert').innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Rubric';
+      }
+    });
+
+    async function toggleRubric(id) {
+      try {
+        await apiFetch(`/rubrics/${id}/toggle`, { method: 'PATCH' });
+        await loadAdminRubrics();
+      } catch (err) { alert('Error: ' + err.message); }
+    }
+
+    async function deleteRubric(id) {
+      if (!confirm('Delete this rubric? This cannot be undone.')) return;
+      try {
+        await apiFetch(`/rubrics/${id}`, { method: 'DELETE' });
+        await loadAdminRubrics();
+        showAlert('rubrics-alert', 'Rubric deleted.', 'success');
+      } catch (err) { showAlert('rubrics-alert', err.message, 'error'); }
+    }
+
+    // ---- Proposals ----
+    let proposalFilter = 'all';
+
+    async function loadAdminProposals() {
+      try {
+        // Fetch student proposals (have proposedBy) + all projects via mode=all
+        // Merge and deduplicate so admin-created approved projects also appear
+        const [studentProposals, allViaMode] = await Promise.allSettled([
+          apiFetch('/projects/proposals'),
+          apiFetch('/projects/proposals?mode=all')
+        ]);
+
+        const p1 = studentProposals.status === 'fulfilled' ? studentProposals.value : [];
+        const p2 = allViaMode.status === 'fulfilled' ? allViaMode.value : [];
+
+        // Deduplicate by _id — p2 (mode=all) wins as source of truth
+        const seen = new Set();
+        allProposals = [];
+        for (const p of [...p2, ...p1]) {
+          if (!seen.has(p._id)) { seen.add(p._id); allProposals.push(p); }
+        }
+
+        updateProposalTabs();
+        renderProposals();
+        const pending = allProposals.filter(p => p.approvalStatus === 'pending').length;
+        const badge = document.getElementById('proposal-badge');
+        if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline' : 'none'; }
+      } catch (err) { showAlert('proposals-alert', err.message, 'error'); }
+    }
+
+    function updateProposalTabs() {
+      const total    = allProposals.length;
+      const pending  = allProposals.filter(p => p.approvalStatus === 'pending').length;
+      const approved = allProposals.filter(p => p.approvalStatus === 'approved').length;
+      const rejected = allProposals.filter(p => p.approvalStatus === 'rejected').length;
+
+      document.getElementById('ptab-all').textContent     = total;
+      document.getElementById('ptab-pending').textContent  = pending;
+      document.getElementById('ptab-approved').textContent = approved;
+      document.getElementById('ptab-rejected').textContent = rejected;
+
+      document.getElementById('pstat-total').textContent    = total;
+      document.getElementById('pstat-pending').textContent  = pending;
+      document.getElementById('pstat-approved').textContent = approved;
+      document.getElementById('pstat-rejected').textContent = rejected;
+    }
+
+    function filterProposals(status, btn) {
+      proposalFilter = status;
+      document.querySelectorAll('#proposals-tabs .eval-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderProposals();
+    }
+
+    function renderProposals() {
+      const grid = document.getElementById('proposals-grid');
+      if (!grid) return;
+      const list = proposalFilter === 'all' ? allProposals : allProposals.filter(p => p.approvalStatus === proposalFilter);
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="text-align:center;padding:60px;color:var(--gray);"><div style="font-size:3.5rem;opacity:.3;margin-bottom:15px;">&#128221;</div><h3 style="font-weight:700;margin-bottom:8px;">No ${proposalFilter === 'all' ? '' : proposalFilter.charAt(0).toUpperCase() + proposalFilter.slice(1) + ' '}Proposals</h3><p>${proposalFilter === 'all' ? 'Student proposals will appear here when submitted.' : 'No proposals with this status.'}</p></div>`;
+        return;
+      }
+      const statusColor = { pending: '#d97706', approved: '#16a34a', rejected: '#dc2626' };
+      const statusBg   = { pending: '#fef9c3', approved: '#dcfce7', rejected: '#fee2e2' };
+      grid.innerHTML = list.map(p => `
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;box-shadow:var(--shadow);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:10px;flex-wrap:wrap;">
+            <div style="flex:1;">
+              <h3 style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:5px;">${escHtml(p.name)}</h3>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:0.8rem;color:var(--gray);">
+                <span>&#128100; <strong>${escHtml(p.proposedBy?.name || 'Unknown')}</strong></span>
+                <span>&#9993; ${escHtml(p.proposedBy?.email || '')}</span>
+                <span style="background:#eff6ff;color:var(--primary);padding:2px 8px;border-radius:10px;font-weight:600;">&#128196; ${p.category}</span>
+                <span>&#128197; ${formatDate(p.createdAt)}</span>
+              </div>
+            </div>
+            <span style="background:${statusBg[p.approvalStatus]};color:${statusColor[p.approvalStatus]};padding:5px 15px;border-radius:20px;font-size:0.8rem;font-weight:700;white-space:nowrap;flex-shrink:0;">
+              ${p.approvalStatus.charAt(0).toUpperCase() + p.approvalStatus.slice(1)}
+            </span>
+          </div>
+          <p style="font-size:0.87rem;color:var(--gray);margin-bottom:14px;line-height:1.65;border-left:3px solid var(--border);padding-left:12px;">${escHtml(p.description)}</p>
+          ${p.approvalStatus === 'rejected' && p.rejectionNote ? `
+            <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:7px;padding:11px 14px;font-size:0.83rem;color:#991b1b;margin-bottom:12px;">
+              <strong>Rejection Note:</strong> ${escHtml(p.rejectionNote)}
+            </div>` : ''}
+          ${p.approvalStatus === 'approved' ? `
+            <div style="background:#dcfce7;border:1px solid #bbf7d0;border-radius:7px;padding:10px 14px;font-size:0.83rem;color:#166534;margin-bottom:12px;">
+              &#10003; <strong>Approved</strong> — Official Score: <strong>${p.score} pts</strong> — Now live in project listings.
+            </div>` : ''}
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            ${p.approvalStatus === 'pending' ? `
+              <button class="btn btn-success btn-auto" style="padding:8px 20px;font-size:0.85rem;" onclick="openApprove('${p._id}')">&#10003; Approve</button>
+              <button class="btn btn-danger btn-auto" style="padding:8px 20px;font-size:0.85rem;" onclick="openReject('${p._id}')">&#10007; Reject</button>
+            ` : ''}
+            ${p.approvalStatus === 'rejected' ? `
+              <button class="btn btn-outline btn-auto" style="padding:7px 16px;font-size:0.83rem;" onclick="openApprove('${p._id}')">&#8635; Re-approve</button>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openApprove(id) {
+      document.getElementById('approve-proposal-id').value = id;
+      document.getElementById('approve-score').value = '';
+      document.getElementById('approve-alert').innerHTML = '';
+      document.getElementById('approve-modal').classList.add('show');
+    }
+
+    function openReject(id) {
+      document.getElementById('reject-proposal-id').value = id;
+      document.getElementById('reject-note').value = '';
+      document.getElementById('reject-alert').innerHTML = '';
+      document.getElementById('reject-modal').classList.add('show');
+    }
+
+    async function submitApproval(action) {
+      const id = action === 'approve'
+        ? document.getElementById('approve-proposal-id').value
+        : document.getElementById('reject-proposal-id').value;
+
+      const body = { action };
+      if (action === 'approve') {
+        const score = document.getElementById('approve-score').value;
+        if (!score || isNaN(score)) {
+          document.getElementById('approve-alert').innerHTML = `<div class="alert alert-error">Please enter a valid score.</div>`;
+          return;
+        }
+        body.score = Number(score);
+      } else {
+        body.rejectionNote = document.getElementById('reject-note').value.trim();
+      }
+
+      const alertBtn = action === 'approve'
+        ? document.querySelector('#approve-modal .btn-success')
+        : document.querySelector('#reject-modal .btn-danger');
+      if (alertBtn) { alertBtn.disabled = true; alertBtn.innerHTML = '<span class="spinner"></span> Processing...'; }
+
+      try {
+        await apiFetch(`/projects/${id}/approval`, { method: 'PATCH', body: JSON.stringify(body) });
+        closeModal('approve-modal');
+        closeModal('reject-modal');
+        // Reset to 'all' so the updated proposal stays visible after status change
+        proposalFilter = 'all';
+        document.querySelectorAll('#proposals-tabs .eval-tab').forEach((b, i) => b.classList.toggle('active', i === 0));
+        await loadAdminProposals(); // also calls updateProposalTabs + renderProposals
+        await loadAdminProjects();
+        await loadDashboard();
+        showAlert('proposals-alert',
+          action === 'approve' ? '&#10003; Proposal approved and published to projects!' : 'Proposal rejected.',
+          action === 'approve' ? 'success' : 'info'
+        );
+      } catch (err) {
+        const alertId = action === 'approve' ? 'approve-alert' : 'reject-alert';
+        document.getElementById(alertId).innerHTML = `<div class="alert alert-error">${err.message}</div>`;
+      } finally {
+        if (alertBtn) { alertBtn.disabled = false; alertBtn.textContent = action === 'approve' ? '✓ Approve & Publish' : '✗ Reject Proposal'; }
+      }
+    }
+
+    // ---- Utility ----
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('show');
+      });
+    });
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>
